@@ -48,6 +48,56 @@ utec::LinkedList<T>::LinkedList(size_t n) //Constructor con la longitud de la li
 
 }
 
+template<typename T>
+utec::LinkedList<T>::LinkedList(const utec::LinkedList<T>& lista) //Constructor copia
+{
+    utec::Node<T>* flying_pointer = lista.head_pointer;
+    for (int n = lista.longitud; n!=1; n--)
+    {
+        utec::Node<T> nodo = new utec::Node<T>{flying_pointer->value, flying_pointer->next};
+        flying_pointer = flying_pointer->next;
+    }
+}
+
+
+template<typename T>
+utec::LinkedList<T>& utec::LinkedList<T>::operator=(const utec::LinkedList<T> &lista) //Constructor asignacion
+{
+    utec::Node<T>* flying_pointer = lista.head_pointer;
+    for (int n = lista.longitud; n!=1; n--)
+    {
+        utec::Node<T> nodo = new utec::Node<T>{flying_pointer->value, flying_pointer->next};
+        flying_pointer = flying_pointer->next;
+    }
+    return *this;
+}
+
+
+template<typename T>
+utec::LinkedList<T>::LinkedList(utec::LinkedList<T> &&lista) noexcept //Constructor Move
+{
+    utec::Node<T>* flying_pointer = lista.head_pointer;
+    for (int n = lista.size(); n!=1; n--)
+    {
+        utec::Node<T> nodo = new utec::Node<T>{std::move(flying_pointer->value), std::move(flying_pointer->next)};
+        flying_pointer = flying_pointer->next;
+    }
+}
+
+template<typename T>
+utec::LinkedList<T>& utec::LinkedList<T>::operator=(utec::LinkedList<T> && lista) noexcept //Constructor Move asign
+{
+    utec::Node<T>* flying_pointer = lista.head_pointer;
+    for (int n = lista.longitud; n!=1; n--)
+    {
+        utec::Node<T> nodo = new utec::Node<T>{std::move(lista->value), std::move(lista->next)};
+        flying_pointer = flying_pointer->next;
+    }
+    return *this;
+}
+
+
+
 
 template<typename T>
 void utec::LinkedList<T>::pop_back() //Quitar ultimo elemento
@@ -68,6 +118,7 @@ void utec::LinkedList<T>::pop_back() //Quitar ultimo elemento
 
             flying_pointer = flying_pointer->next; //Recorrer atravez de los punteros hasta la penultima posicion
         }
+        delete flying_pointer->next; //Libera la memoria
         flying_pointer->next = nullptr; //Asignar el ultimo puntero a nulo
         tail_pointer = flying_pointer; //Asignar el ultimo puntero como el ultimo puntero
     }
@@ -86,7 +137,9 @@ void utec::LinkedList<T>::pop_front() //Quitar el primer elemento
     else
     {
         longitud--;
+        utec::Node<T>* flying_pointer = head_pointer;
         head_pointer = head_pointer->next; //Asignar el segundo elemento como el primero
+        delete flying_pointer; //Libera la memoria
     }
 }
 
@@ -94,6 +147,7 @@ void utec::LinkedList<T>::pop_front() //Quitar el primer elemento
 template<typename T>
 void utec::LinkedList<T>::push_back(T element) //Insertar elemento al final
 {
+    longitud++;
     tail_pointer->next = new Node<T>{element}; //Apuntar el elemento en el final a un nuevo elemento
     tail_pointer = tail_pointer->next; //Asignar ese elemento como el final
 }
@@ -102,45 +156,54 @@ void utec::LinkedList<T>::push_back(T element) //Insertar elemento al final
 template<typename T>
 void utec::LinkedList<T>::push_front(T element) //Insertar elemento al principio
 {
-    head_pointer = new Node<T>{element, head_pointer->next}; //Asignar el elemento del principio a un nuevo elemento que este apuntando al que era el del inicio
-}
-
-
-template<typename T>
-void utec::LinkedList<T>::insert(T element, int index) //Insertar elemento
-{
     longitud++;
-    utec::Node<T>* flying_pointer = head_pointer; //Crear un puntero volando sobre la lista
-    for (int counter = 1;counter < index; counter++)
-    {
-        flying_pointer = flying_pointer->next; //recorrer hasta llegar al indice
-    }
-    flying_pointer->next =  new utec::Node<T>{element, flying_pointer->next}; //Apuntar el indice a un nuevo nodo que apunta al elemento que estaba en su lugar
+    utec::Node<T>* bridge = head_pointer;
+    head_pointer = new Node<T>{element, bridge}; //Asignar el elemento del principio a un nuevo elemento que este apuntando al que era el del inicio
 }
 
+
 template<typename T>
-void utec::LinkedList<T>::erase(int index)
+void utec::LinkedList<T>::insert(T element, size_t index) //Insertar elemento
 {
-    longitud--;
-    if (head_pointer == tail_pointer) //Si la lista tiene un solo elemento
+    if (index >= 0 && index < longitud)
     {
-        delete head_pointer; //Eliminar y apuntar a null
-        head_pointer = nullptr;
-        tail_pointer = nullptr;
-        longitud = 0;
-    }
-    else
-    {
-        utec::Node<T>* flying_pointer = head_pointer;
-        for (int counter = 1;counter < index-1; counter++)
+        longitud++;
+        utec::Node<T>* flying_pointer = head_pointer; //Crear un puntero volando sobre la lista
+        for (size_t counter = 0;counter < index; counter++)
         {
             flying_pointer = flying_pointer->next; //recorrer hasta llegar al indice
         }
-        utec::Node<T>* puente = flying_pointer->next->next;
-        delete flying_pointer->next;
-        flying_pointer->next = puente;
+        flying_pointer->next =  new utec::Node<T>{element, flying_pointer->next}; //Apuntar el indice a un nuevo nodo que apunta al elemento que estaba en su lugar
     }
+}
 
+
+template<typename T>
+void utec::LinkedList<T>::erase(size_t index) //Eliminar un elemento
+{
+    if (index >= 0 && index < longitud)
+    {
+        longitud--;
+        if (head_pointer == tail_pointer) //Si la lista tiene un solo elemento
+        {
+            delete head_pointer; //Eliminar y apuntar a null
+            head_pointer = nullptr;
+            tail_pointer = nullptr;
+            longitud = 0;
+        }
+        else
+        {
+            utec::Node<T>* flying_pointer = head_pointer;
+
+            for (size_t counter = 0;counter < index; counter++)
+            {
+                flying_pointer = flying_pointer->next; //recorrer hasta llegar al indice
+            }
+            utec::Node<T>* puente = flying_pointer->next->next; //Construye un puente que salte a travez de lo que vaz a borrar
+            delete flying_pointer->next; //Borralo
+            flying_pointer->next = puente; //Usa el puente para conectarlos de nuevo
+        }
+    }
 }
 
 
@@ -154,3 +217,23 @@ void utec::LinkedList<T>::cout_list() //Imprime los elementos en la lista (para 
         flying_pointer = flying_pointer->next; //asigna el puntero al siguiente en la lista
     }
 }
+
+template<typename T>
+T utec::LinkedList<T>::item(size_t index) //Retornar el item en el index
+{
+    utec::Node<T>* flying_pointer = head_pointer;
+    for (size_t counter = 0;counter < index; counter++)
+    {
+        flying_pointer = flying_pointer->next; //recorrer hasta llegar al indice
+    }
+    return flying_pointer->value;
+}
+
+template<typename T>
+size_t utec::LinkedList<T>::size() const
+{
+    return longitud;
+}
+
+
+
