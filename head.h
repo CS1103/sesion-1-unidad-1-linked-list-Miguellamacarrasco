@@ -1,4 +1,5 @@
 #include <iostream>
+#include <conio.h>
 #ifndef head.h
 
 
@@ -9,12 +10,12 @@ namespace utec
     template<typename T>
     struct Node{
             utec::Node<T>* next = nullptr;
-            T value = 0;
+            T value = {};
         public:
             Node();
             Node(Node* next);
+            Node(T element);
             Node(T value,Node *next);
-            ~Node();
     };
     template<typename T>
     class LinkedList{
@@ -30,6 +31,9 @@ namespace utec
             void pop_back();
             void push_back(T element);
             void push_front(T element);
+            void insert(T element, int index);
+            void erase(int index);
+            void cout_list();
     };
 
 }

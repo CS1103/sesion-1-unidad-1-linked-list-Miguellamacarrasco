@@ -13,6 +13,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add directory="C:/Users/migue/Documents/linking/Linking/" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -32,6 +33,8 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="head.cpp" />
+		<Unit filename="head.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
