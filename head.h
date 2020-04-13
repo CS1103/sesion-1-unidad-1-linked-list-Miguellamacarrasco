@@ -26,7 +26,7 @@ namespace utec
             size_t longitud = 0;
         public:
             LinkedList<T> ();
-            LinkedList<T> (size_t n);
+            LinkedList<T> (size_t n); //La razon por la que no paso por referencia es para cubrir en el caso de que n no sea una variable
             LinkedList<T>(const LinkedList& lista);
             LinkedList<T>& operator=(const utec::LinkedList<T>& lista);
             LinkedList<T>(LinkedList&& lista) noexcept;
@@ -39,9 +39,10 @@ namespace utec
             void push_front(T element);
             void insert(T element, size_t index);
             void erase(size_t index);
-            T item(size_t index);
+            T item(size_t index) const;
             size_t size() const;
             void cout_list();
+            utec::Node<T>* head() const;
     };
 
 }
