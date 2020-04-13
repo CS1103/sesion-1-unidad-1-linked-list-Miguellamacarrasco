@@ -13,10 +13,8 @@ int main() {
         ll.push_front(i);
     }
 
-    utec::LinkedList<int> l2 = ll;
-    ll.cout_list();
-    std::cout << "\n";
-    l2.cout_list();
+    utec::LinkedList<int> l3 = std::move(ll);
+    l3.cout_list();
     // Verifico el tamano
     assert(ll.size() == 10);
 

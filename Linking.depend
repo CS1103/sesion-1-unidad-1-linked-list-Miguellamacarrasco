@@ -1,16 +1,16 @@
 # depslib dependency file v1.0
-1586673386 source:c:\users\migue\documents\linking\linking\head.cpp
+1586754174 source:c:\users\migue\documents\linking\linking\head.cpp
 	"head.h"
 
-1586674043 c:\users\migue\documents\linking\linking\head.h
+1586757371 c:\users\migue\documents\linking\linking\head.h
 	<iostream>
 	<conio.h>
 	<cassert>
 	<string>
 
-1586673628 source:c:\users\migue\documents\linking\linking\main.cpp
+1586754192 source:c:\users\migue\documents\linking\linking\main.cpp
 	"head.cpp"
 
-1586674043 c:\users\migue\documents\linking\linking\head.cpp
+1586757686 c:\users\migue\documents\linking\linking\head.cpp
 	"head.h"
 

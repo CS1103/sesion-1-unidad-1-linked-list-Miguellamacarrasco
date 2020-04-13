@@ -44,6 +44,7 @@ namespace utec
             size_t size() const;
             void cout_list();
             utec::Node<T>* head() const;
+            void empty();
     };
 
 }

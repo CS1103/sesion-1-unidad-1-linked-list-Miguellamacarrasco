@@ -67,6 +67,7 @@ utec::LinkedList<T>::LinkedList(const utec::LinkedList<T>& lista) //Constructor 
 template<typename T>
 utec::LinkedList<T>& utec::LinkedList<T>::operator=(const utec::LinkedList<T> &lista) //Constructor asignacion
 {
+    this.empty();
     if (&lista == this)
     {
         return *this;
@@ -89,34 +90,20 @@ utec::LinkedList<T>& utec::LinkedList<T>::operator=(const utec::LinkedList<T> &l
 template<typename T>
 utec::LinkedList<T>::LinkedList(utec::LinkedList<T> &&lista) noexcept //Constructor Move
 {
-    utec::Node<T>* flying_pointer = lista.head_pointer;
-    longitud = lista.size();
-    utec::Node<T> nodo = new utec::Node<T>{std::move(flying_pointer->value), std::move(flying_pointer->next)};
-    head_pointer = nodo;
-    for (size_t n = longitud; n!=0; n--)
-    {
-        utec::Node<T> nodo = new utec::Node<T>{std::move(flying_pointer->value), std::move(flying_pointer->next)};
-        flying_pointer = flying_pointer->next;
-    }
-    tail_pointer = nodo;
-    delete lista;
+    head_pointer = std::move(lista.head_pointer);
+    tail_pointer = std::move(lista.tail_pointer);
 }
 
 template<typename T>
 utec::LinkedList<T>& utec::LinkedList<T>::operator=(utec::LinkedList<T> && lista) noexcept //Constructor Move asign
 {
-    delete this;
+    this.empty();
     if (&lista == this)
     {
         return *this;
     }
-    utec::Node<T>* flying_pointer = lista.head_pointer;
-    longitud = lista.size();
-    for (size_t n = longitud; n!=0; n--)
-    {
-        utec::Node<T> nodo = new utec::Node<T>{std::move(lista->value), std::move(lista->next)};
-        flying_pointer = flying_pointer->next;
-    }
+    head_pointer = std::move(lista.head_pointer);
+    tail_pointer = std::move(lista.tail_pointer);
     delete lista;
     return *this;
 }
@@ -127,7 +114,7 @@ utec::LinkedList<T>::~LinkedList() //Destructor (me gusta llamar a mi solucion "
 {
     utec::Node<T>* flying_pointer = head_pointer;
     utec::Node<T>* prev_pointer;
-    for(size_t n=0; n<longitud;n++)
+    while(flying_pointer->next != nullptr)
     {
         prev_pointer = flying_pointer;//guarda el pointer
         flying_pointer = flying_pointer->next; //pasar al siguiente
@@ -276,5 +263,18 @@ template<typename T>
 utec::Node<T>* utec::LinkedList<T>::head() const
 {
     return head_pointer;
+}
+
+template<typename T>
+void utec::LinkedList<T>::empty()
+{
+    utec::Node<T>* flying_pointer = head_pointer;
+    utec::Node<T>* prev_pointer;
+    while(flying_pointer->next != nullptr)
+    {
+        prev_pointer = flying_pointer;//guarda el pointer
+        flying_pointer = flying_pointer->next; //pasar al siguiente
+        delete prev_pointer; //quemar el puente
+    }
 }
 
