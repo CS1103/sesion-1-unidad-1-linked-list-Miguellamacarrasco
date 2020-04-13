@@ -54,10 +54,10 @@ utec::LinkedList<T>::LinkedList(const utec::LinkedList<T>& lista) //Constructor 
     utec::Node<T>* nodo = new Node<T>{lista.item(lista.size())};
     utec::Node<T>* prev_pointer = nodo;
     tail_pointer = prev_pointer;
-    for (size_t n = lista.size()-1; n!=0; n--)
+    for (size_t n = lista.size(); n!=0; n--)
     {
         longitud++;
-        utec::Node<T>* nodo = new Node<T>{lista.item(n), prev_pointer};
+        utec::Node<T>* nodo = new Node<T>{lista.item(n-1), prev_pointer};
         prev_pointer = nodo;
     }
     head_pointer = prev_pointer;
@@ -74,10 +74,10 @@ utec::LinkedList<T>& utec::LinkedList<T>::operator=(const utec::LinkedList<T> &l
     utec::Node<T>* nodo = new Node<T>{lista.item(lista.size())};
     utec::Node<T>* prev_pointer = nodo;
     tail_pointer = prev_pointer;
-    for (size_t n = lista.size()-1; n!=0; n--)
+    for (int n = lista.size(); n!=-1; n--)
     {
         longitud++;
-        utec::Node<T>* nodo = new Node<T>{lista.item(n), prev_pointer};
+        utec::Node<T>* nodo = new Node<T>{lista.item(n-1), prev_pointer};
         prev_pointer = nodo;
     }
     head_pointer = prev_pointer;
@@ -91,11 +91,14 @@ utec::LinkedList<T>::LinkedList(utec::LinkedList<T> &&lista) noexcept //Construc
 {
     utec::Node<T>* flying_pointer = lista.head_pointer;
     longitud = lista.size();
+    utec::Node<T> nodo = new utec::Node<T>{std::move(flying_pointer->value), std::move(flying_pointer->next)};
+    head_pointer = nodo;
     for (size_t n = longitud; n!=0; n--)
     {
         utec::Node<T> nodo = new utec::Node<T>{std::move(flying_pointer->value), std::move(flying_pointer->next)};
         flying_pointer = flying_pointer->next;
     }
+    tail_pointer = nodo;
 }
 
 template<typename T>
