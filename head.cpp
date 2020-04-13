@@ -41,7 +41,7 @@ utec::LinkedList<T>::LinkedList(size_t n) //Constructor con la longitud de la li
     tail_pointer = prev_point; //le informo a la clase cual es el ultimo elemento de la lista
     for(size_t counter = 0; counter < n; counter++)
     {
-        utec::Node<T> * nodo = new Node<T>{prev_point}; //Declaro un Nodo dinamico apuntando al nodo anterior
+        utec::Node<T>* nodo = new Node<T>{prev_point}; //Declaro un Nodo dinamico apuntando al nodo anterior
         prev_point = nodo; //Declaro el nodo anterior a el nodo que acabo de crear
     }
     head_pointer = prev_point; //Declaro donde empieza la lista
@@ -51,24 +51,37 @@ utec::LinkedList<T>::LinkedList(size_t n) //Constructor con la longitud de la li
 template<typename T>
 utec::LinkedList<T>::LinkedList(const utec::LinkedList<T>& lista) //Constructor copia
 {
-    utec::Node<T>* flying_pointer = lista.head_pointer;
-    for (int n = lista.longitud; n!=1; n--)
+    utec::Node<T>* nodo = new Node<T>{lista.item(lista.size())};
+    utec::Node<T>* prev_pointer = nodo;
+    tail_pointer = prev_pointer;
+    for (size_t n = lista.size()-1; n!=0; n--)
     {
-        utec::Node<T> nodo = new utec::Node<T>{flying_pointer->value, flying_pointer->next};
-        flying_pointer = flying_pointer->next;
+        longitud++;
+        utec::Node<T>* nodo = new Node<T>{lista.item(n), prev_pointer};
+        prev_pointer = nodo;
     }
+    head_pointer = prev_pointer;
 }
 
 
 template<typename T>
 utec::LinkedList<T>& utec::LinkedList<T>::operator=(const utec::LinkedList<T> &lista) //Constructor asignacion
 {
-    utec::Node<T>* flying_pointer = lista.head_pointer;
-    for (int n = lista.longitud; n!=1; n--)
+    if (&lista == this)
     {
-        utec::Node<T> nodo = new utec::Node<T>{flying_pointer->value, flying_pointer->next};
-        flying_pointer = flying_pointer->next;
+        return *this;
     }
+    utec::Node<T>* nodo = new Node<T>{lista.item(lista.size())};
+    utec::Node<T>* prev_pointer = nodo;
+    tail_pointer = prev_pointer;
+    for (size_t n = lista.size()-1; n!=0; n--)
+    {
+        longitud++;
+        utec::Node<T>* nodo = new Node<T>{lista.item(n), prev_pointer};
+        prev_pointer = nodo;
+    }
+    head_pointer = prev_pointer;
+
     return *this;
 }
 
@@ -77,7 +90,8 @@ template<typename T>
 utec::LinkedList<T>::LinkedList(utec::LinkedList<T> &&lista) noexcept //Constructor Move
 {
     utec::Node<T>* flying_pointer = lista.head_pointer;
-    for (int n = lista.size(); n!=1; n--)
+    longitud = lista.size();
+    for (size_t n = longitud; n!=0; n--)
     {
         utec::Node<T> nodo = new utec::Node<T>{std::move(flying_pointer->value), std::move(flying_pointer->next)};
         flying_pointer = flying_pointer->next;
@@ -88,7 +102,8 @@ template<typename T>
 utec::LinkedList<T>& utec::LinkedList<T>::operator=(utec::LinkedList<T> && lista) noexcept //Constructor Move asign
 {
     utec::Node<T>* flying_pointer = lista.head_pointer;
-    for (int n = lista.longitud; n!=1; n--)
+    longitud = lista.size();
+    for (size_t n = longitud; n!=0; n--)
     {
         utec::Node<T> nodo = new utec::Node<T>{std::move(lista->value), std::move(lista->next)};
         flying_pointer = flying_pointer->next;
@@ -219,7 +234,7 @@ void utec::LinkedList<T>::cout_list() //Imprime los elementos en la lista (para 
 }
 
 template<typename T>
-T utec::LinkedList<T>::item(size_t index) //Retornar el item en el index
+T utec::LinkedList<T>::item(size_t index) const //Retornar el item en el index
 {
     utec::Node<T>* flying_pointer = head_pointer;
     for (size_t counter = 0;counter < index; counter++)
@@ -235,5 +250,9 @@ size_t utec::LinkedList<T>::size() const
     return longitud;
 }
 
-
+template<typename T>
+utec::Node<T>* utec::LinkedList<T>::head() const
+{
+    return head_pointer;
+}
 
