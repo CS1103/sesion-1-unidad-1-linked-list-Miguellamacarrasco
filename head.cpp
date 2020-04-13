@@ -99,11 +99,13 @@ utec::LinkedList<T>::LinkedList(utec::LinkedList<T> &&lista) noexcept //Construc
         flying_pointer = flying_pointer->next;
     }
     tail_pointer = nodo;
+    delete lista;
 }
 
 template<typename T>
 utec::LinkedList<T>& utec::LinkedList<T>::operator=(utec::LinkedList<T> && lista) noexcept //Constructor Move asign
 {
+    delete this;
     if (&lista == this)
     {
         return *this;
@@ -115,6 +117,7 @@ utec::LinkedList<T>& utec::LinkedList<T>::operator=(utec::LinkedList<T> && lista
         utec::Node<T> nodo = new utec::Node<T>{std::move(lista->value), std::move(lista->next)};
         flying_pointer = flying_pointer->next;
     }
+    delete lista;
     return *this;
 }
 
@@ -123,9 +126,10 @@ template<typename T>
 utec::LinkedList<T>::~LinkedList() //Destructor (me gusta llamar a mi solucion "metodo quemar el puente")
 {
     utec::Node<T>* flying_pointer = head_pointer;
-    while(flying_pointer->next != nullptr)
+    utec::Node<T>* prev_pointer;
+    for(size_t n=0; n<longitud;n++)
     {
-        utec::Node<T>* prev_pointer = flying_pointer; //guarda el pointer
+        prev_pointer = flying_pointer;//guarda el pointer
         flying_pointer = flying_pointer->next; //pasar al siguiente
         delete prev_pointer; //quemar el puente
     }
