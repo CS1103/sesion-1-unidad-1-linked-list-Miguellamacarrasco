@@ -32,6 +32,7 @@ namespace utec
             LinkedList<T>(LinkedList&& lista) noexcept;
             LinkedList<T>& operator=(LinkedList&& lista) noexcept;
 
+            ~LinkedList<T>();
 
             void pop_front();
             void pop_back();
